@@ -9,7 +9,6 @@ use chrono::prelude::*;
 use regex::{Regex,Captures};
 use config::*;
 use CFG_DEFAULT;
-// use chrono::{DateTime,Utc};
 
 #[derive(Debug, Serialize)]
 pub struct Uarticle {
@@ -20,8 +19,6 @@ pub struct Uarticle {
     pub comments_count: i32,
     pub title: String,
     pub content: String,
-    // pub createtime: String,
-    // pub updatetime: String,
     pub createtime: String,
     pub updatetime: String,
     pub username: String,
@@ -33,7 +30,6 @@ pub struct Ucomment {
     pub aid: i32,
     pub uid: i32,
     pub content: String,
-    // pub createtime: String,
     pub createtime: String,
     pub username: String,
 }
