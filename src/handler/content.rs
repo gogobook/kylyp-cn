@@ -325,7 +325,6 @@ pub fn get_user_comments(user_id: &UserId) -> Vec<UserComment> {
             comment_createtime: row.get(4),
         };
         user_comments.push(comment);
-        println!("---------------hello----------------" );
     }
     user_comments
 }

@@ -77,7 +77,6 @@ pub fn user_page_login(name: &RawStr,user: UserOr,user_id: UserId,flash: Option<
         let this_user = get_user_info(&user_id);
         let articles = get_user_articles(&user_id);
         let comments = get_user_comments(&user_id);
-        println!("---------------hello----------------" );
         let messages = get_user_messages(&user_id);
         let context = UserInfo {
             login_user: this_user,
