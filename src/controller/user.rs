@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use rocket::outcome::IntoOutcome;
 use chrono::prelude::*;
 use handler::content::{UserComment,UserMessage,get_user_info,get_user_articles,get_user_comments,get_user_messages};
-use chrono::{DateTime,Utc};
+// use chrono::{DateTime,Utc};
 
 #[derive(Debug,Serialize)]
 pub struct Uid {
@@ -77,6 +77,7 @@ pub fn user_page_login(name: &RawStr,user: UserOr,user_id: UserId,flash: Option<
         let this_user = get_user_info(&user_id);
         let articles = get_user_articles(&user_id);
         let comments = get_user_comments(&user_id);
+        println!("---------------hello----------------" );
         let messages = get_user_messages(&user_id);
         let context = UserInfo {
             login_user: this_user,
@@ -143,7 +144,8 @@ fn register_post(user_form: Form< UserRegister>) -> Result<Redirect, String> {
                 email: &post_user.email,
                 username: &post_user.username,
                 password: &post_user.password,
-                created_at: Utc::now(), 
+                // created_at: Utc::now(), 
+                regtime: &Local::now().to_string(),
             };
             diesel::insert(&new_user).into(users::table).execute(&connection).expect("User is  Exist!");
             Ok(Redirect::to("/user/login"))

@@ -1,5 +1,4 @@
 use utils::schema::{users,message};
-use chrono::{DateTime,Utc,NaiveDateTime};
 
 #[derive(Clone,Debug,Serialize,Identifiable,Queryable)]
 #[has_many(article,comment)]
@@ -8,7 +7,7 @@ pub struct User {
     pub email: String,
     pub username: String,
     pub password: String,
-    pub created_at: NaiveDateTime,
+    pub regtime: String,
 }
 
 #[derive(Insertable)]
@@ -17,7 +16,7 @@ pub struct NewUser<'a> {
     pub email: &'a str,
     pub username: &'a str,
     pub password: &'a str,
-    pub created_at: DateTime<Utc>,
+    pub regtime: &'a str,
 }
 
 #[derive(Clone,Debug,Serialize,Queryable, Associations)]
@@ -31,7 +30,7 @@ pub struct Message {
     pub content: String,
     pub mode: i32,
     pub status: i32,
-    pub created_at: DateTime<Utc>,
+    pub createtime: String,
 }
 
 
@@ -45,7 +44,7 @@ pub struct NewMessage<'a> {
     pub content: &'a str,
     pub mode: i32,
     pub status: i32,
-    pub created_at: DateTime<Utc>,
+    pub createtime: &'a str,
 }
 
 pub mod message_mode {

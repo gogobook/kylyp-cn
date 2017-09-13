@@ -1,6 +1,5 @@
 use model::user::User;
 use utils::schema::{article,comment};
-use chrono::{DateTime,Utc};
 
 #[derive(Clone,Debug,Serialize,Queryable, Associations)]
 #[belongs_to(User)]
@@ -12,8 +11,8 @@ pub struct Article {
     pub comments_count: i32,
     pub title: String,
     pub content: String,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    pub createtime: String,
+    pub updatetime: String,
 }
 
 
@@ -24,8 +23,8 @@ pub struct NewArticle<'a> {
     pub category: &'a str,
     pub title: &'a str,
     pub content: &'a str,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    pub createtime: &'a str,
+    pub updatetime: &'a str,
 }
 
 #[derive(Clone,Debug,Serialize,Queryable,  Associations)]
@@ -35,7 +34,7 @@ pub struct Comment {
     pub aid: i32,
     pub uid: i32,
     pub content: String,
-    pub created_at: DateTime<Utc>,
+    pub createtime: String,
 }
 
 #[derive(Insertable)]
@@ -44,7 +43,7 @@ pub struct NewComment<'a> {
     pub aid: i32,
     pub uid: i32,
     pub content: &'a str,
-    pub created_at: DateTime<Utc>,
+    pub createtime: &'a str,
 }
 
 pub mod STATUS {

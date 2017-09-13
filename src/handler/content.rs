@@ -9,7 +9,7 @@ use chrono::prelude::*;
 use regex::{Regex,Captures};
 use config::*;
 use CFG_DEFAULT;
-use chrono::{DateTime,Utc};
+// use chrono::{DateTime,Utc};
 
 #[derive(Debug, Serialize)]
 pub struct Uarticle {
@@ -20,8 +20,10 @@ pub struct Uarticle {
     pub comments_count: i32,
     pub title: String,
     pub content: String,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    // pub createtime: String,
+    // pub updatetime: String,
+    pub createtime: String,
+    pub updatetime: String,
     pub username: String,
 }
 
@@ -31,7 +33,8 @@ pub struct Ucomment {
     pub aid: i32,
     pub uid: i32,
     pub content: String,
-    pub created_at: DateTime<Utc>,
+    // pub createtime: String,
+    pub createtime: String,
     pub username: String,
 }
 #[derive(Debug,Serialize)]
@@ -43,8 +46,8 @@ pub struct UserComment {
     pub comments_count: i32,
     pub title: String,
     pub content: String,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    pub createtime: String,
+    pub updatetime: String,
     pub comment_id: i32,
     pub comment_aid: i32,
     pub comment_uid: i32,
@@ -103,8 +106,8 @@ pub fn article_list() -> Vec<Uarticle> {
             comments_count: row.get(4),
             title: row.get(5),
             content: row.get(6),
-            created_at: row.get(7),
-            updated_at: row.get(8),
+            createtime: row.get(7),
+            updatetime: row.get(8),     
             username: row.get(9),
         };
         article_result.push(result);
@@ -122,8 +125,8 @@ pub fn get_article_by_aid(aid: i32) -> Uarticle {
         comments_count: 0,
         title: "".to_string(),
         content: "".to_string(),
-        created_at: Utc::now(), 
-        updated_at: Utc::now(), 
+        createtime: "".to_string(),
+        updatetime: "".to_string(),
         username: "".to_string(),
     };
     for row in &conn.query("SELECT article.*, users.username FROM article, users WHERE article.uid = users.id and article.id = $1", &[&aid]).unwrap() {
@@ -135,8 +138,8 @@ pub fn get_article_by_aid(aid: i32) -> Uarticle {
             comments_count: row.get(4),
             title: row.get(5),
             content: row.get(6),
-            created_at: row.get(7),
-            updated_at: row.get(8),
+            createtime: row.get(7),
+            updatetime: row.get(8),     
             username: row.get(9),
         };
     }
@@ -152,7 +155,7 @@ pub fn get_comment_by_aid(aid: i32) -> Vec<Ucomment> {
             aid: row.get(1),
             uid: row.get(2),
             content: row.get(3),
-            created_at: row.get(4),
+            createtime: row.get(4),
             username: row.get(5),
         };
         result.push(comment_result);
@@ -163,15 +166,15 @@ pub fn get_comment_by_aid(aid: i32) -> Vec<Ucomment> {
 pub fn add_article_by_uid<'a>(uid: i32, category: &'a str, title: &'a str, content: &'a str) {
     use utils::schema::article;
     let connection = establish_connection();
-    let created_at = Utc::now();
-    let updated_at = Utc::now();
+    let createtime = &Local::now().to_string();
+    let updatetime = &Local::now().to_string();
     let new_article = NewArticle {
         uid: uid,
         category: category,
         title: title,
         content: content,
-        created_at: created_at,
-        updated_at: updated_at,
+        createtime: createtime,
+        updatetime: updatetime,
     };
     diesel::insert(&new_article).into(article::table).execute(&connection).expect("Error saving new list");
 }
@@ -214,12 +217,12 @@ pub fn add_comment_by_aid<'a>(aid: i32, uid: i32, content: &'a str,) {
             None => format!("@{}", cap.at(1).unwrap()),
         }
     });
-    let created_at = Utc::now();
+    let createtime = &Local::now().to_string();
     let new_comment = NewComment {
         aid : aid,
         uid : uid,
         content : &new_content,
-        created_at : created_at,
+        createtime : createtime,
     };
     diesel::insert(&new_comment).into(comment::table).execute(&connection).expect("Error saving new comment");
     
@@ -239,14 +242,14 @@ pub fn add_comment_by_aid<'a>(aid: i32, uid: i32, content: &'a str,) {
         author_id = t_uid.id;
     }
     if uid != author_id {
-        conn.execute("INSERT INTO message (aid, cid, from_uid, to_uid, content, mode, status, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-                 &[&aid, &comment_id, &uid, &author_id, &content, &message_mode::REPLY_ARTICLE, &message_status::INIT, &created_at]).unwrap();
+        conn.execute("INSERT INTO message (aid, cid, from_uid, to_uid, content, mode, status, createtime) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+                 &[&aid, &comment_id, &uid, &author_id, &content, &message_mode::REPLY_ARTICLE, &message_status::INIT, &createtime]).unwrap();
     }
     to_uids.sort();
     to_uids.dedup();
     for to_uid in to_uids.iter().filter(|&x| *x != author_id && *x != uid) {
-        conn.execute("INSERT INTO message(aid, cid, from_uid, to_uid, content, mode, status, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-                &[&aid, &comment_id, &uid, &to_uid, &content, &message_mode::REPLY_ARTICLE, &message_status::INIT, &created_at]).unwrap();
+        conn.execute("INSERT INTO message(aid, cid, from_uid, to_uid, content, mode, status, createtime) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+                &[&aid, &comment_id, &uid, &to_uid, &content, &message_mode::REPLY_ARTICLE, &message_status::INIT, &createtime]).unwrap();
     }
 }
 
@@ -292,8 +295,8 @@ pub fn get_user_articles(user_id: &UserId) -> Vec<Article> {
             comments_count: row.get(4),
             title: row.get(5),
             content: row.get(6),
-            created_at: row.get(7),
-            updated_at: row.get(8),
+            createtime: row.get(7),
+            updatetime: row.get(8),     
         };
         user_articles.push(article);
     }
@@ -313,8 +316,8 @@ pub fn get_user_comments(user_id: &UserId) -> Vec<UserComment> {
             comments_count: row.get(9),
             title: row.get(10),
             content: row.get(11),
-            created_at: row.get(12),
-            updated_at: row.get(13),
+            createtime: row.get(12),
+            updatetime: row.get(13),
             comment_id: row.get(0),
             comment_aid: row.get(1),
             comment_uid: row.get(2),
@@ -322,6 +325,7 @@ pub fn get_user_comments(user_id: &UserId) -> Vec<UserComment> {
             comment_createtime: row.get(4),
         };
         user_comments.push(comment);
+        println!("---------------hello----------------" );
     }
     user_comments
 }
@@ -330,12 +334,12 @@ pub fn get_user_messages(user_id: &UserId) -> Vec<UserMessage> {
     let conn = get_conn();
     let u_id = user_id.0;
     let mut user_messages: Vec<UserMessage> = vec![];
-    for row in &conn.query("SELECT m.status, m.created_at, c.content, u.id as user_id, u.username,
+    for row in &conn.query("SELECT m.status, m.createtime, c.content, u.id as user_id, u.username,
          u.email, a.id as article_id, a.title as article_title 
          from message as m join users as u on m.from_uid = u.id 
          join article as a on a.id=m.aid 
          join comment as c on c.id=m.cid 
-         where to_uid= $1 order by created_at desc;",&[&u_id]).unwrap() {
+         where to_uid= $1 order by createtime desc;",&[&u_id]).unwrap() {
         let message = UserMessage {
             message_status: row.get(0),
             message_createtime: row.get(1),
