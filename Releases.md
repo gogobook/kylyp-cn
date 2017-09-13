@@ -1,11 +1,11 @@
 ## Releases :  **0.7.0** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2017-9-12
 ### Done：
-- add Doc Nav
-- make index right
+- 增加文档导航
+- 增加博客功能
+- 使首页正确优化
 ### Plan：
-- add blog module
-- add Area Nav
-- add News Nav
+- 增加板块功能
+- 增加新闻功能
 
 ## Releases :  **0.6.0** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2017-9-11
 
