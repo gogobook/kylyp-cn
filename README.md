@@ -1,4 +1,4 @@
-# kylyp (rust-web qq群:661633549)
+# kylyp (欢迎加入微博：Rustlang社区)
 
 [![Build Status](https://travis-ci.org/ivanceras/kylyp.svg?branch=master)](https://travis-ci.org/ivanceras/kylyp)
 
