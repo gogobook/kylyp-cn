@@ -1,4 +1,4 @@
-# kylyp (欢迎加入微博：Rustlang社区)
+# kylyp (欢迎加入微博群：Rustlang社区)
 
 [![Build Status](https://travis-ci.org/ivanceras/kylyp.svg?branch=master)](https://travis-ci.org/ivanceras/kylyp)
 
